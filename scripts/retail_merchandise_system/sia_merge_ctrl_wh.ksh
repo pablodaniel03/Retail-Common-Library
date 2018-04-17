@@ -21,7 +21,7 @@ SCRIPT_NAME="$(basename $0 .ksh)"
 # Script
 ###########################################
 
-_message "Program started ..."
+message "Program started ..."
 
 _sqlplus "
 set serveroutput on
@@ -36,5 +36,6 @@ END;
 /
 exit
 "
-_message "Program completed successfully"
+message "Program completed successfully"
+
 exit 0

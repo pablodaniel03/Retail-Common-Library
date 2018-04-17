@@ -56,7 +56,7 @@ function _fem_aip_order {
 	_sqlplus "begin schema.package.procedure (${thread}, ${NUM_THREAD}); commit; end;"
 }
 
-_message "Program started ..."
+message "Program started ..."
 
 _process_arguments $@
 
@@ -70,5 +70,5 @@ else
 	_exec _fem_aip_order $THREAD
 fi
 
-_message "Program completed successfully"
+message "Program completed successfully"
 exit 0

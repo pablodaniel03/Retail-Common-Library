@@ -21,7 +21,7 @@ SCRIPT_NAME="$(basename $0 .ksh)"
 MMHOME="/path/to/mmhome"
 PDF_OUTPUT="/path/to/pdf/files"
 SQLPLUS_LOGON="/@RMS_DBNAME"
-CONNECT_STRING="rms100/F3msarm5prd@FCRMSPRD"
+CONNECT_STRING="/@RMS_DBNAME"
 ACTION=
 
 function _usage {
@@ -69,7 +69,7 @@ function _get_pdf_names {
 function _update_po_status {
   typeset order_no=$1
 
-  _message "Updating purchase orders status"
+  message "Updating purchase orders status"
   _sqlplus "
     begin
     update siaprd.xxfc_stg_aip_purch_orders
@@ -88,10 +88,10 @@ function _update_po_status {
 function _purge_po {
   _sql_fetch "select trunc(sysdate) - trunc((add_months(sysdate,-5)),'mon') from dual;" PURGE_TIME
   
-  _message "Backing purchase orders"
+  message "Backing purchase orders"
   _exec find ${PDF_OUTPUT}/OC_HIST -name '*.pdf' -mtime +${PURGE_TIME} -exec rm -f {} \; _verify
   
-  _message "Purging purchase orders"
+  message "Purging purchase orders"
   _exec find ${PDF_OUTPUT}/OC -name '*.pdf' -mtime +1 -exec mv -f '{}' ${PDF_OUTPUT}/OC_HIST \; _verify
   _exec find ${PDF_OUTPUT}/OC -name '*'+$(TZ=EST+24 date +%Y%m%d)+'*.pdf' -exec mv -f '{}' ${PDF_OUTPUT}/OC_HIST \; _verify
 }
@@ -111,28 +111,27 @@ function _run_report {
 # ordenes de compra
 function _generate_purchase_orders {
   
-  _message "Generation of purchase orders started..."
+  message "Generation of purchase orders started..."
   PDF_FILES=$(_get_pdf_names)
 
-  echo $PDF_FILE
 
   IFS=":"; while read ORDER_NO PDF_FILE; do
-    _message "    File \"${PDF_FILE}\" for purchase order \"${ORDER_NO}\""
+    message "    File \"${PDF_FILE}\" for purchase order \"${ORDER_NO}\""
 
     _exec _run_report ${ORDER_NO} ${PDF_FILE}
-    echo _exec _update_po_status ${ORDER_NO}
+    _exec _update_po_status ${ORDER_NO}
   done <<< "${PDF_FILES}"
 
-  _message "Generation of purchase orders completed"
+  message "Generation of purchase orders completed"
 
-  echo _exec _purge_po
+  _exec _purge_po
 }
 
 function _send_purchase_orders {
-  echo _sqlplus "begin siaprd.xxfc_aip_compras.envia_correos; end; commit;"
+  _sqlplus "begin siaprd.xxfc_aip_compras.envia_correos; end; commit;"
 }
 
-_message "Program started..."
+message "Program started..."
 
 _process_arguments $@
 
@@ -145,5 +144,5 @@ elif [[ $ACTION == "ALL" ]]; then
   _exec _send_purchase_orders
 fi
 
-_message "Program completed successfully"
+message "Program completed successfully"
 exit 0
