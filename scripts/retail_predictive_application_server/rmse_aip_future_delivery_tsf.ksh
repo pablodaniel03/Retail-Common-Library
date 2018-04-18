@@ -436,7 +436,7 @@ message "Program started ..."
 FLOW_FILE="${LOG_DIR}/${PROGRAM_NAME}.xml"
 cat > ${FLOW_FILE} << EOF
 <FLOW name = "${PROGRAM_NAME}.flw">
-   ${DBREAD}
+   ${DBREAD[RMS]}
       <PROPERTY name = "query">
          <![CDATA[
             ${SQL_STATEMENT1}
@@ -446,15 +446,14 @@ cat > ${FLOW_FILE} << EOF
    </OPERATOR>
    
    <OPERATOR type="filter">
-      <!--<INPUT    name="future_delivery_tsf_nfp1a.v"/>-->
-	  <INPUT    name="future_delivery_tsf_nfp.v"/>
+	    <INPUT    name="future_delivery_tsf_nfp.v"/>
       <PROPERTY name="filter" value="ORDMULT_REJ_FLAG EQ 1"/>
       <PROPERTY name="rejects" value="true"/>
       <OUTPUT   name="future_delivery_tsf_nfp1af_rej.v"/>
       <OUTPUT   name="future_delivery_tsf_nfp1af.v"/>
    </OPERATOR>
 
-   ${DBREAD}
+   ${DBREAD[RMS]}
       <PROPERTY name = "query">
          <![CDATA[
             ${SQL_STATEMENT2}
