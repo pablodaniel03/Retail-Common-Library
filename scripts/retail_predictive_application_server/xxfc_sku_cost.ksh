@@ -31,7 +31,6 @@ export PROGRAM_NAME='xxfc_sku_cost'
 ########################################################
 . ${AIP_HOME}/rfx/etc/xxfc_aip_config.env
 . ${LIB_DIR}/xxfc_sia_lib.ksh
-. ${LIB_DIR}/delta_lib.ksh
 
 ########################################################
 #  OUTPUT DEFINES 
@@ -44,24 +43,6 @@ ITEM_LOC_SCHEMA=${SCHEMA_DIR}/ITEM_LOC_LEGACY.schema
 export OUTPUT_FILE_NAME="sku_cost.dat"
 export OUTPUT_FILE=${DATA_DIR}/${OUTPUT_FILE_NAME}
 export OUTPUT_SCHEMA=${SCHEMA_DIR}/sku_cost.schema
-
-###############################################################################
-#  DELTA 
-#  
-#  delta_str sets old datafiles.
-#  Delimited by '|'
-#  
-#  delta_str "${var1}|${var2}"
-#  
-#  retl_changecapture sets in CHANGECAPTURE_$1 variable the changecapture 
-#  RETL tag with the following arguments
-#  KEYS delimited by '|'
-#  
-#  retl_changecapture "PATH FILE" "PATH SCHEMA" "KEY1|KEY2"
-###############################################################################
-
-#delta_str ${OUTPUT_FILE_NAME}
-#retl_changecapture "${OUTPUT_FILE}" "${OUTPUT_SCHEMA}" "AIP_SKU|SUPPLIER_040|WAREHOUSE_040"
 
 ###############################################################################
 #  Friendly (necessary?) start message
@@ -87,7 +68,6 @@ cat > ${FLOW_FILE} << EOF
 			
 			<OPERATOR type="filter"> 
                <PROPERTY name="filter" value="SKU_COST_040 GT 0"/>
-               
                <OPERATOR type="filter"> 
                   <PROPERTY name="filter" value="FLAG_040_046_047_048 EQ 1"/>
                   <OUTPUT name="SKU_COST_FULL.v"/>
@@ -114,4 +94,4 @@ message "Program completed successfully"
 ###############################################################################
 # cleanup and exit
 ###############################################################################
-rmse_terminate 0
+exit 0
