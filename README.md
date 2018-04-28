@@ -634,15 +634,51 @@ END;
 "
 ```
 
-## Licencia
-
-La librería cuenta con una licencia bajo los terminos de GNU General Public License version
-2 o superior. Mira el archivo [COPYING] para ver la Licencia.
 
 ## Contribuciones
 
 Todo tipo de contribución o retroalimentación es bienvenidas.
 Para más información consulta el archivo [CONTRIBUTING].
+
+### Clonar repositorio sobre un directorio existente
+En caso de que se esté trabajando en un proyecto ya existente se necesita crear la estructura de git dentro de la carpeta del proyecto mediante:
+```
+git init
+```
+
+Una vez ejecutado este comando es necesario agregar los archivos que se deseen versionar mediante `git add`.
+Como en la mayoría de los comandos ejecutados en una terminal, es posible hacer uso de [Wildcards](http://tldp.org/LDP/GNU-Linux-Tools-Summary/html/x11655.htm)
+por lo que podemos utilizar:
+```
+git add *.php       # añade todos los archivos con extensión php
+git add README.md   # añade un archivo en especifico (README.md)
+git add */*         # añade todos los archivos y subcarpetas
+```
+
+Inmediato de añadir los archivos podremos confirmar nuestros cambios mediante `git commit`. Podemos utilizar "flags" para enviar información adicional:
+```
+git commit -m "Initial Commit"
+```
+
+Nota. Puedes ver el cambio de estatus del repositorio durante la clonación con `git status`.
+
+Nota. Puedes ver la lista de commits realizados con `git log`.
+
+Nota. Puedes ver las versiones de los tag con `git tag -l`. 
+
+### Clonar un repositorio existente
+Si se desea descargar el proyecto para su contribución, puedes utilizar el comando `git clone`.
+Puedes clonar el repositorio mediante el protocolo HTTPS o el protocolo SSH (Secure Shell):
+
+- SSH:   `git clone git@bitbucket.org:pablodaniel03/proyecto_femsa.git`
+- HTTPS: `git clone https://pablodaniel03@bitbucket.org/pablodaniel03/proyecto_femsa.git`
+
+Nota. Se suele usar HTTPS ya que es el protocolo que menos se bloquea por lo firewalls.
+
+## Licencia
+
+La librería cuenta con una licencia bajo los terminos de GNU General Public License version
+2 o superior. Mira el archivo [COPYING] para ver la Licencia.
 
 ## Autor
 La librería se creo el 15 de febrero de 2018 por [Pablo Almaguer] para el proyecto SIA.
