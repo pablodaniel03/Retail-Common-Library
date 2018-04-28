@@ -61,11 +61,12 @@ alias message='__message ${LINENO} INFORMATION'   # Custom alias for integration
 #
 # $1 - Line number
 # $2 - Return code
+# $3 - Custom loglevel
 ###########################################
 function __terminate {
   typeset lineno=${1}
   typeset exit=${2:-$?}
-  typeset loglevel=${3:-INFORMATION}
+  typeset loglevel=${3:-DEBUG}
 
   __message ${lineno} ${loglevel} "Exiting script with code: ${exit}"
 
