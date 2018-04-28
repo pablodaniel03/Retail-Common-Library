@@ -1,7 +1,7 @@
 ###########################################
 # xxfc_sia_lib.ksh - Custom library
 # 
-# Revision: 1
+# Revision: 1.0.2
 # Author: Pablo Almaguer
 # Creation date: 2018-02-15
 #
@@ -24,8 +24,11 @@ _LOG_DIR="${LOG_DIR:-$TMP}"
 _ERR_DIR="${ERR_DIR:-$TMP}"
 _LOG_FILE="${LOG_FILE:-${_LOG_DIR}/${_SCRIPT_NAME}.$(__get_timestamp).log}"
 _ERR_FILE="${ERR_FILE:-${_ERR_DIR}/${_SCRIPT_NAME}.$(__get_timestamp)}"
-
-#_CONNECT_STRING="user/password" #Descomentar para no utilizar wallets
+# Oracle Database Configuration
+# ORACLE_HOME=""                                 #Directorio base de la instalación de la base de datos o cliente SQL*Plus
+# ORACLE_SID=""                                  #Identificador de la base de datos
+# TNS_ADMIN=""                                   #Ruta para archivo tnsnames.ora
+# _CONNECT_STRING="user/password"                #Descomentar para no utilizar wallets
 
 
 ###########################################
