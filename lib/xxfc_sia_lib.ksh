@@ -87,12 +87,12 @@ function __exec {
   typeset -i lineno=$1
   shift
   __LAST_CALL="$*"
-  __message ${lineno} INFORMATION "_exec executing command '$*'"
+  __message ${lineno} DEBUG "_exec executing command '$*'"
   "$@" >> "${_ERR_FILE}" 2>&1
   typeset -i exit=$?
   __verify $? ${LINENO}
   __verify_log ${LINENO}
-  __message ${lineno} INFORMATION "_exec of command '$*' complete"
+  __message ${lineno} DEBUG "_exec of command '$*' complete"
   #return ${exit}
 }
 alias _exec='__exec ${LINENO}'
