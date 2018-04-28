@@ -1,7 +1,7 @@
 ###########################################
 # xxfc_sia_lib.ksh - Custom library
 # 
-# Revision: 1
+# Revision: 1.0.2
 # Author: Pablo Almaguer
 # Creation date: 2018-02-15
 #
@@ -24,6 +24,12 @@ _LOG_DIR="${LOG_DIR:-$TMP}"
 _ERR_DIR="${ERR_DIR:-$TMP}"
 _LOG_FILE="${LOG_FILE:-${_LOG_DIR}/${_SCRIPT_NAME}.$(__get_timestamp).log}"
 _ERR_FILE="${ERR_FILE:-${_ERR_DIR}/${_SCRIPT_NAME}.$(__get_timestamp)}"
+# Oracle Database Configuration
+# ORACLE_HOME=""                                 #Directorio base de la instalación de la base de datos o cliente SQL*Plus
+# ORACLE_SID=""                                  #Identificador de la base de datos
+# TNS_ADMIN=""                                   #Ruta para archivo tnsnames.ora
+# _CONNECT_STRING="user/password"                #Descomentar para no utilizar wallets
+
 
 ###########################################
 # Function __message
@@ -58,11 +64,12 @@ alias message='__message ${LINENO} INFORMATION'   # Custom alias for integration
 #
 # $1 - Line number
 # $2 - Return code
+# $3 - Custom loglevel
 ###########################################
 function __terminate {
   typeset lineno=${1}
   typeset exit=${2:-$?}
-  typeset loglevel=${3:-INFORMATION}
+  typeset loglevel=${3:-DEBUG}
 
   __message ${lineno} ${loglevel} "Exiting script with code: ${exit}"
 
@@ -84,12 +91,12 @@ function __exec {
   typeset -i lineno=$1
   shift
   __LAST_CALL="$*"
-  __message ${lineno} INFORMATION "_exec executing command '$*'"
+  __message ${lineno} DEBUG "_exec executing command '$*'"
   "$@" >> "${_ERR_FILE}" 2>&1
   typeset -i exit=$?
   __verify $? ${LINENO}
   __verify_log ${LINENO}
-  __message ${lineno} INFORMATION "_exec of command '$*' complete"
+  __message ${lineno} DEBUG "_exec of command '$*' complete"
   #return ${exit}
 }
 alias _exec='__exec ${LINENO}'
@@ -191,9 +198,10 @@ function __sql_fetch {
   typeset lineno=${1}
   typeset sql_command=${2}
   typeset outvar=${3:-SQL_OUT}
-  typeset dbalias=${4:-${ORACLE_SID:-FCRMSPRD}}
+  typeset dbalias=${4:-${ORACLE_SID:-DEFAULTALIAS}}
+  typeset conection_string=${_CONNEC_STRING:-"/"}
 
-  fetched_value=`sqlplus -s /@${dbalias} << EOF
+  fetched_value=`sqlplus -s ${conection_string}@${dbalias} << EOF
                   set pagesize 0
                   set serveroutput on size 1000000
                   set feedback off
@@ -202,7 +210,7 @@ function __sql_fetch {
                   exit;
 EOF`
 
-  __message ${lineno} INFORMATION "_sql_fetch value returned: ${fetched_value}"
+  __message ${lineno} DEBUG "_sql_fetch value returned: ${fetched_value}"
   
   eval ${outvar}='${fetched_value}'
   __verify $? ${lineno}
