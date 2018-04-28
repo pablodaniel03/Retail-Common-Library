@@ -207,7 +207,7 @@ function __sql_fetch {
                   exit;
 EOF`
 
-  __message ${lineno} INFORMATION "_sql_fetch value returned: ${fetched_value}"
+  __message ${lineno} DEBUG "_sql_fetch value returned: ${fetched_value}"
   
   eval ${outvar}='${fetched_value}'
   __verify $? ${lineno}
