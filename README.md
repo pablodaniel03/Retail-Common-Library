@@ -6,7 +6,7 @@ SIA Library es un portable desarrollo en KornShell Script creado para los script
 #
 # Script: test_script.ksh
 # Description: description of the script
-# Revision: 1
+# Revision: 1.0.2
 # Author: Pablo Almaguer
 # Creation date: 2018-04-16
 ###########################################
@@ -25,6 +25,16 @@ print $variable
 message "Program completed successfully"
 exit 0
 ```
+
+## Problema
+La implementación y el desarrollo de Shell Script en los sistemas empresariales tiene un gran potencial, es utilizado por las grandes empresas de los ERP's.
+Sin emargo, cuando no se tiene un conocimiento intermedio - avanzado, frecuentemente se encuentran problemas como:
+
+- Terminación de script correcto cuando falló un binario o un script anidado.
+- Archivos de log con muy poca información y sin hacer mención del tipo de log que se imprime.
+- Código redundante.
+- Pobre administración del ambiente de desarrollo para los scripts.
+- No se tiene un control de cambios incluido en el IDE.
 
 ## Arquitectura
 
@@ -57,6 +67,23 @@ Los siguientes scripts estan incluidos:
 * `/lib/delta_lib.ksh`
 
 	Mejora la escritura de código RETL en el uso del operador Changecapture para la extracción de información delta.
+
+
+## Requerimientos
+Para un correcto funcionamiento y provechamiento de las mejoras en seguridad y manejo de credenciales, la librería `xxfc_sia_lib.ksh` requiere de versiones Oracle 11g o más reciente 
+para hacer uso de [Oracle Wallet]. No obstante en la versión [1.0.2](https://bitbucket.org/pablodaniel03/proyecto_femsa/src/?at=v1.0.2) se agregó un manejo de excepción para utilizar las credenciales convencionales mediante variables de ambiente.
+
+```
+#!/bin/ksh
+# función __sql_fetch
+
+typeset dbalias=${4:-${ORACLE_SID:-DEFAULTALIAS}}
+typeset conection_string=${_CONNEC_STRING:-"/"}
+```
+La librería utiliza la variable de ambiente `${ORACLE_SID}`, la cual es declarada en la [configuración del ambiente para los sistemas linux](https://docs.oracle.com/database/121/ADMQS/GUID-EC18C4A6-3BA5-4C14-9D76-B0DD62FEFFF2.htm#ADMQS12369).
+Si está variable no se encuentra declarada, se puede declarar un SID predeterminado en el lugar de "DEFAULTALIAS".
+La variable interna `$conection_string` controlará el uso de Wallets en caso de que la variable `${_CONNEC_STRING}` se haya descomentado y configurado.
+
 
 
 ## Implementación
@@ -430,11 +457,18 @@ Estas funciones cuentan con alias, donde este prefijo cambia o se elimina y se a
 
 #### Configuración variables
 ```
+# Private variables
 _SCRIPT_NAME="${SCRIPT_NAME:-${PROGRAM_NAME:-$0.$$}}"
 _LOG_DIR="${LOG_DIR:-$TMP}"
 _ERR_DIR="${ERR_DIR:-$TMP}"
 _LOG_FILE="${LOG_FILE:-${_LOG_DIR}/${_SCRIPT_NAME}.$(__get_timestamp).log}"
 _ERR_FILE="${ERR_FILE:-${_ERR_DIR}/${_SCRIPT_NAME}.$(__get_timestamp)}"
+
+# Oracle Database Configuration
+# ORACLE_HOME=""                                 #Directorio base de la instalación de la base de datos o cliente SQL*Plus
+# ORACLE_SID=""                                  #Identificador de la base de datos
+# TNS_ADMIN=""                                   #Ruta para archivo tnsnames.ora
+# _CONNECT_STRING="user/password"                #Descomentar para no utilizar wallets
 ```
 Para el correcto funcionamiento de log en los scripts que utilzan `xxfc_aip_config.env`, es necesario que se declarara la variable `$PROGRAM_NAME`. 
 
@@ -622,3 +656,4 @@ Ver [GitHub] del autor.
 [COPYING]: https://github.com/chriscool/sharness/blob/master/COPYING
 [Pablo Almaguer]: https://bitbucket.org/pablodaniel03
 [GitHub]: https://github.com/pablodaniel03
+[Oracle Wallet]: https://docs.oracle.com/en/database/oracle/oracle-database/12.2/dbimi/using-oracle-wallet-manager.html#GUID-D0AA8373-B0AC-4DD8-9FA9-403E345E5A71
