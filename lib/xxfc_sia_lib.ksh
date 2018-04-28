@@ -25,6 +25,9 @@ _ERR_DIR="${ERR_DIR:-$TMP}"
 _LOG_FILE="${LOG_FILE:-${_LOG_DIR}/${_SCRIPT_NAME}.$(__get_timestamp).log}"
 _ERR_FILE="${ERR_FILE:-${_ERR_DIR}/${_SCRIPT_NAME}.$(__get_timestamp)}"
 
+#_CONNECT_STRING="user/password" #Descomentar para no utilizar wallets
+
+
 ###########################################
 # Function __message
 # ---------------------------------
@@ -191,9 +194,10 @@ function __sql_fetch {
   typeset lineno=${1}
   typeset sql_command=${2}
   typeset outvar=${3:-SQL_OUT}
-  typeset dbalias=${4:-${ORACLE_SID:-FCRMSPRD}}
+  typeset dbalias=${4:-${ORACLE_SID:-DEFAULTALIAS}}
+  typeset conection_string=${_CONNEC_STRING:-"/"}
 
-  fetched_value=`sqlplus -s /@${dbalias} << EOF
+  fetched_value=`sqlplus -s ${conection_string}@${dbalias} << EOF
                   set pagesize 0
                   set serveroutput on size 1000000
                   set feedback off
